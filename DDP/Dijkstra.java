@@ -6,6 +6,8 @@ package DDP;
 // of the graph.
 import DDP.FileRead;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
+
 class Dijkstra
 {
 
@@ -146,7 +148,7 @@ class Dijkstra
     }
 
     // Driver Code
-    public static void main(String[] args)
+    public static void main(String[] args) throws FileNotFoundException
     {
        /* int[][] adjacencyMatrix = {
                 { 0, 4, 0, 0, 0, 0, 0, 8, 0 },
@@ -159,6 +161,11 @@ class Dijkstra
                 { 8, 11, 0, 0, 0, 0, 1, 0, 7 },
                 { 0, 0, 2, 0, 0, 0, 6, 7, 0 } };*/
         int[][] adjacencyMatrix = new int[40][40];
+        int[][][] test = new int[2][3][5];
+        int [] tester = {1,2,3,4};
+        test[1][2] = tester;
+        System.out.println(Arrays.deepToString(test));
+        System.out.println(Arrays.toString(test[1][2]));
         FileRead fr = new FileRead();
         adjacencyMatrix = fr.Read();
         for( int i=0;i<adjacencyMatrix.length;i++)

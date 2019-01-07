@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class FileRead
 {
-    public int[][] Read() //throws FileNotFoundException
+    public int[][] Read() throws FileNotFoundException
     {
         Scanner sc = new Scanner(new BufferedReader(new FileReader("DDP/map_network.txt")));
         int rows = 40;
