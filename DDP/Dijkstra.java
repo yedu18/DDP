@@ -148,6 +148,16 @@ class Dijkstra
     }
 
     // Driver Code
+
+    /**
+     * Type "/**" just above the function definition and then
+     * press enter for it to automatically generate this format
+     * for you and then you can fill it in. If you do not know
+     * what to write here, check it out online.
+     *
+     * @param args
+     * @throws FileNotFoundException
+     */
     public static void main(String[] args) throws FileNotFoundException
     {
        /* int[][] adjacencyMatrix = {
