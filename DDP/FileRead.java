@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class FileRead
 {
-    public int[][] Read() throws FileNotFoundException
+    public int[][] mapRead() throws FileNotFoundException
     {
         Scanner sc = new Scanner(new BufferedReader(new FileReader("DDP/map_network.txt")));
         int rows = 40;
@@ -23,6 +23,27 @@ public class FileRead
                 //System.out.print(Integer.parseInt(line[j])+" ");
                 myArray[i][j] = Integer.parseInt(line[j]);
             }
+            //System.out.println();
+        }
+        return myArray;
+    }
+
+    public int[][] flightRead() throws FileNotFoundException
+    {
+        Scanner sc = new Scanner(new BufferedReader(new FileReader("DDP/flights.txt")));
+        int rows = 7;
+        int columns = 8;
+        Flight [][] myArray = new Flight[rows][columns];
+        for (int i=0; i<myArray.length; i++)
+        {
+            String[] line = sc.nextLine().trim().split(" ");
+            Flight[i].setFlight_no(line[0]);
+            Flight[i].setStart_node(line[1]);
+            Flight[i].setEnd_node(line[2]);
+            Flight[i].setStart_time(line[3]);
+            Flight[i].setSpeed(line[4]);
+            Flight[i].setSep(line[5]);
+            Flight[i].setRun_len(line[6]);
             //System.out.println();
         }
         return myArray;

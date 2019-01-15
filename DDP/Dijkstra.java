@@ -6,19 +6,18 @@ package DDP;
 // of the graph.
 import DDP.FileRead;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 
-class Dijkstra
+public class Dijkstra
 {
 
-    private static final int NO_PARENT = -1;
+    public static final int NO_PARENT = -1;
 
     // Function that implements Dijkstra's
     // single source shortest path
     // algorithm for a graph represented
     // using adjacency matrix
     // representation
-    private static void dijkstra(int[][] adjacencyMatrix,
+    public static void dijkstra(int[][] adjacencyMatrix,
                                  int startVertex)
     {
         int nVertices = adjacencyMatrix[0].length;
@@ -109,7 +108,7 @@ class Dijkstra
     // A utility function to print
     // the constructed distances
     // array and shortest paths
-    private static void printSolution(int startVertex,
+    public static void printSolution(int startVertex,
                                       int[] distances,
                                       int[] parents)
     {
@@ -133,7 +132,7 @@ class Dijkstra
     // Function to print shortest path
     // from source to currentVertex
     // using parents array
-    private static void printPath(int currentVertex,
+    public static void printPath(int currentVertex,
                                   int[] parents)
     {
 
@@ -158,30 +157,7 @@ class Dijkstra
      * @param args
      * @throws FileNotFoundException
      */
-    public static void main(String[] args) throws FileNotFoundException
-    {
-       /* int[][] adjacencyMatrix = {
-                { 0, 4, 0, 0, 0, 0, 0, 8, 0 },
-                { 4, 0, 8, 0, 0, 0, 0, 11, 0 },
-                { 0, 8, 0, 7, 0, 4, 0, 0, 2 },
-                { 0, 0, 7, 0, 9, 14, 0, 0, 0 },
-                { 0, 0, 0, 9, 0, 10, 0, 0, 0 },
-                { 0, 0, 4, 0, 10, 0, 2, 0, 0 },
-                { 0, 0, 0, 14, 0, 2, 0, 1, 6 },
-                { 8, 11, 0, 0, 0, 0, 1, 0, 7 },
-                { 0, 0, 2, 0, 0, 0, 6, 7, 0 } };*/
-        int[][] adjacencyMatrix = new int[40][40];
-        int[][][] test = new int[2][3][5];
-        int [] tester = {1,2,3,4};
-        test[1][2] = tester;
-        System.out.println(Arrays.deepToString(test));
-        System.out.println(Arrays.toString(test[1][2]));
-        FileRead fr = new FileRead();
-        adjacencyMatrix = fr.Read();
-        for( int i=0;i<adjacencyMatrix.length;i++)
-        {
-            dijkstra(adjacencyMatrix, i);
-        }
 
-    }
+
+
 }
