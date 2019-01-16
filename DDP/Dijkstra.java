@@ -4,8 +4,8 @@ package DDP;
 // algorithm. The program is for
 // adjacency matrix representation
 // of the graph.
-import DDP.FileRead;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public class Dijkstra
 {
@@ -17,8 +17,8 @@ public class Dijkstra
     // algorithm for a graph represented
     // using adjacency matrix
     // representation
-    public static void dijkstra(int[][] adjacencyMatrix,
-                                 int startVertex)
+    public static int[][][] dijkstra(int[][] adjacencyMatrix,
+                                 int startVertex, int[][][] pathMap)
     {
         int nVertices = adjacencyMatrix[0].length;
 
@@ -102,15 +102,16 @@ public class Dijkstra
             }
         }
 
-        printSolution(startVertex, shortestDistances, parents);
+        return printSolution(startVertex, shortestDistances, parents, pathMap);
     }
 
     // A utility function to print
     // the constructed distances
     // array and shortest paths
-    public static void printSolution(int startVertex,
+    public static int[][][] printSolution(int startVertex,
                                       int[] distances,
-                                      int[] parents)
+                                      int[] parents,
+                                      int[][][] pathMap)
     {
         int nVertices = distances.length;
         System.out.print("Vertex\t Distance\tPath");
@@ -119,14 +120,18 @@ public class Dijkstra
              vertexIndex < nVertices;
              vertexIndex++)
         {
+            ArrayList<Integer> path = new ArrayList<>();
             if (vertexIndex != startVertex)
             {
+                path = getPath(vertexIndex, parents, path);
+                pathMap[startVertex][vertexIndex] = path.stream().mapToInt(i -> i).toArray();
                 System.out.print("\n" + startVertex + " -> ");
                 System.out.print(vertexIndex + " \t\t ");
                 System.out.print(distances[vertexIndex] + "\t\t");
                 printPath(vertexIndex, parents);
             }
         }
+        return pathMap;
     }
 
     // Function to print shortest path
@@ -144,6 +149,21 @@ public class Dijkstra
         }
         printPath(parents[currentVertex], parents);
         System.out.print(currentVertex + " ");
+    }
+
+    public static ArrayList<Integer> getPath(int currentVertex,
+                                 int[] parents, ArrayList<Integer> path)
+    {
+
+        // Base case : Source node has
+        // been processed
+        if (currentVertex == NO_PARENT)
+        {
+            return path;
+        }
+        path.add(0, currentVertex);
+        getPath(parents[currentVertex], parents, path);
+        return path;
     }
 
     // Driver Code

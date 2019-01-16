@@ -1,5 +1,4 @@
 package DDP;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -28,22 +27,24 @@ public class FileRead
         return myArray;
     }
 
-    public int[][] flightRead() throws FileNotFoundException
+    public Flight[] flightRead() throws FileNotFoundException
     {
         Scanner sc = new Scanner(new BufferedReader(new FileReader("DDP/flights.txt")));
         int rows = 7;
         int columns = 8;
-        Flight [][] myArray = new Flight[rows][columns];
+        Flight [] myArray = new Flight[rows];
         for (int i=0; i<myArray.length; i++)
         {
-            String[] line = sc.nextLine().trim().split(" ");
-            Flight[i].setFlight_no(line[0]);
-            Flight[i].setStart_node(line[1]);
-            Flight[i].setEnd_node(line[2]);
-            Flight[i].setStart_time(line[3]);
-            Flight[i].setSpeed(line[4]);
-            Flight[i].setSep(line[5]);
-            Flight[i].setRun_len(line[6]);
+            int[] line = Arrays.stream(sc.nextLine().trim().split(" ")).mapToInt(Integer::parseInt).toArray();
+            Flight new_flight = new Flight();
+            new_flight.setFlight_no(line[0]);
+            new_flight.setStart_node(line[1]);
+            new_flight.setEnd_node(line[2]);
+            new_flight.setStart_time(line[3]);
+            new_flight.setSpeed(line[4]);
+            new_flight.setSep(line[5]);
+            new_flight.setRun_len(line[6]);
+            myArray[i] = new_flight;
             //System.out.println();
         }
         return myArray;

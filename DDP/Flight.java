@@ -11,6 +11,20 @@ public class Flight
     public int run_len;
     public int priority;
 
+    public Flight(int flight_no, int start_node, int end_node, int start_time, int speed, int sep, int run_len, int priority) {
+        this.flight_no = flight_no;
+        this.start_node = start_node;
+        this.end_node = end_node;
+        this.start_time = start_time;
+        this.speed = speed;
+        this.sep = sep;
+        this.run_len = run_len;
+        this.priority = priority;
+    }
+
+    public Flight() {
+    }
+
     public int getFlight_no() {
         return flight_no;
     }
@@ -74,5 +88,4 @@ public class Flight
     public void setPriority(int priority) {
         this.priority = priority;
     }
-}
 }

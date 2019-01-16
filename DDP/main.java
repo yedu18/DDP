@@ -1,8 +1,7 @@
 package DDP;
 
 import java.io.FileNotFoundException;
-import DDP.Dijkstra;
-import DDP.Flight;
+import java.util.Arrays;
 
 public class main
 {
@@ -18,10 +17,13 @@ public class main
         FileRead fr = new FileRead();
         Dijkstra d = new Dijkstra();
         adjacencyMatrix = fr.mapRead();
-        DDP.Flight flightInfo = fr.flightRead();
+        Flight[] flightInfo = fr.flightRead();
+        int[][][] pathMap = new int[40][40][40];
         for (int i = 0; i < adjacencyMatrix.length; i++)
         {
-            d.dijkstra(adjacencyMatrix, i);
+            pathMap = d.dijkstra(adjacencyMatrix, i, pathMap);
         }
+        System.out.println("\n\n\n\n\n\n\n\n");
+        System.out.println(Arrays.toString(pathMap[39][39]));
     }
 }
