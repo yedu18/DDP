@@ -12,7 +12,7 @@ public class main
         {
             int[] source = pathMap[flightInfo[i].getStart_node()][flightInfo[i].getEnd_node()];
             int[] flightRoute = Arrays.copyOfRange(source,0,source.length);
-            System.out.print(flightRoute);
+            System.out.println(Arrays.toString(flightRoute));
             for(int j=0;j<40;j++)
             {
                 if(Arrays.binarySearch(flightRoute,j)==1)
