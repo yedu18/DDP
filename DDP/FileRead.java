@@ -12,9 +12,9 @@ public class FileRead
 {
     public int[][] mapRead() throws FileNotFoundException
     {
-        Scanner sc = new Scanner(new BufferedReader(new FileReader("DDP/map_network.txt")));
-        int rows = 40;
-        int columns = 40;
+        Scanner sc = new Scanner(new BufferedReader(new FileReader("DDP/map_network_baijal.txt")));
+        int rows = 15;
+        int columns = 15;
         int [][] myArray = new int[rows][columns];
         for (int i=0; i<myArray.length; i++) {
             String[] line = sc.nextLine().trim().split(" ");
@@ -29,7 +29,7 @@ public class FileRead
 
     public Flight[] flightRead() throws FileNotFoundException
     {
-        Scanner sc = new Scanner(new BufferedReader(new FileReader("DDP/flights.txt")));
+        Scanner sc = new Scanner(new BufferedReader(new FileReader("DDP/flights_baijal.txt")));
         int rows = 7;
         int columns = 8;
         Flight [] myArray = new Flight[rows];

@@ -3,11 +3,12 @@ package DDP;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 
+
 public class main
 {
     public static int[][] generateRouteMatrix(Flight[] flightInfo, int[][][] pathMap)
     {
-        int[][] route_matrix = new int[7][40];
+        int[][] route_matrix = new int[7][15];
         for(int i=0;i<7;i++)
         {
             int[] source = pathMap[flightInfo[i].getStart_node()][flightInfo[i].getEnd_node()];
@@ -23,7 +24,7 @@ public class main
 
     public static int[][] generateTimeMatrix(Flight[] flightInfo, int[][][] pathMap, int[][] map)
     {
-        int[][] time_matrix = new int[7][40];
+        int[][] time_matrix = new int[7][15];
         for(int i=0;i<7;i++)
         {
             int start_time = flightInfo[i].getStart_time();
@@ -33,7 +34,7 @@ public class main
             time_matrix[i][flightRoute[0]]=current_time;
             for(int j=1;j<flightRoute.length;j++)
             {
-                current_time= current_time + map[flightRoute[j]][flightRoute[j-1]];
+                current_time= current_time + map[flightRoute[j-1]][flightRoute[j]];
                 time_matrix[i][flightRoute[j]]=current_time;
             }
         }
@@ -42,10 +43,10 @@ public class main
 
     public static int[][] generateConflictMatrix(Flight[] flightInfo, int[][] route_matrix, int[][] time_matrix)
     {
-        int[][] conflict_matrix = new int[7][40];
+        int[][] conflict_matrix = new int[7][15];
         for(int i=0;i<7;i++)
         {
-            for(int j=0;j<40;j++)
+            for(int j=0;j<15;j++)
             {
                 for(int k=0;k<7;k++)
                 {
@@ -61,24 +62,29 @@ public class main
         return conflict_matrix;
     }
 
-    public static int[][] updateTimeMatrix(int[][] time_matrix, int node, int wait)
+    public static int[][] updateTimeMatrix(int[][] time_matrix, int flight, int node, int wait)
     {
-
+        for(int j=0;j<15;j++)
+        {
+            if(time_matrix[flight][j]>=time_matrix[flight][node])
+                time_matrix[flight][j]+=wait;
+        }
+        return time_matrix;
     }
 
-    public static int[][] updateConflictMatrix(Flight[] flightInfo, int[][] route_matrix, int[][] time_matrix)
-    {
-
-    }
+//    public static int[][] updateConflictMatrix(Flight[] flightInfo, int[][] route_matrix, int[][] time_matrix)
+//    {
+//    }
 
 
     public static int[][] resolveConflicts(Flight[] flightInfo, int[][][] pathMap, int[][] map, int[][] route_matrix, int[][] time_matrix, int[][] conflict_matrix)
     {
-        int [][] final_time_matrix = new int[][];
-        int wait, node;
+        //int [][] final_time_matrix = new int[7][15];
+        int wait=0, flight, node;
+        int total_wait=0;
         for(int i=0;i<7;i++)
         {
-            for(int j=0;j<40;j++)
+            for(int j=0;j<15;j++)
             {
                 while(conflict_matrix[i][j]==1)
                 {
@@ -88,16 +94,41 @@ public class main
                             continue;
                         if (Math.abs((time_matrix[i][j] - time_matrix[k][j])) < flightInfo[i].getSep())
                         {
-                            node = (time_matrix[i][j] > time_matrix[k][j])?i:k;
+                            flight = (time_matrix[i][j] > time_matrix[k][j])?i:k;
+                            node = j;
                             wait = flightInfo[i].getSep() - Math.abs((time_matrix[i][j] - time_matrix[k][j]));
-                            time_matrix = updateTimeMatrix(time_matrix,node,wait);
-                            conflict_matrix = updateConflictMatrix(flightInfo,route_matrix,time_matrix);
+                            time_matrix = updateTimeMatrix(time_matrix,flight,node,wait);
+                            conflict_matrix = generateConflictMatrix(flightInfo,route_matrix,time_matrix);
                         }
                     }
                 }
             }
+            total_wait+=wait;
         }
-        return final_time_matrix;
+        System.out.println();
+        System.out.println("Total wait = "+total_wait);
+        for(int i=0;i<7;i++)
+        {
+            for(int j=0;j<15;j++)
+            {
+                //System.out.println("blah");
+                System.out.print(time_matrix[i][j]+"\t");
+
+            }
+            System.out.println();
+        }
+        System.out.println();
+        for(int i=0;i<7;i++)
+        {
+            for(int j=0;j<15;j++)
+            {
+                //System.out.println("blah");
+                System.out.print(conflict_matrix[i][j]+"\t");
+
+            }
+            System.out.println();
+        }
+        return time_matrix;
 
     }
 
@@ -105,7 +136,7 @@ public class main
     public static void main(String[] args) throws FileNotFoundException
     {
 
-        int[][] map = new int[40][40];
+        int[][] map = new int[15][15];
         /*int[][][] test = new int[2][3][5];
         int[] tester = {1, 2, 3, 4};
         test[1][2] = tester;
@@ -115,7 +146,7 @@ public class main
         Dijkstra d = new Dijkstra();
         map = fr.mapRead();
         Flight[] flightInfo = fr.flightRead();
-        int[][][] pathMap = new int[40][40][40];
+        int[][][] pathMap = new int[15][15][15];
         for (int i = 0; i < map.length; i++)
         {
             pathMap = d.dijkstra(map, i, pathMap);
@@ -124,13 +155,13 @@ public class main
         //System.out.println(Arrays.toString(pathMap[flightInfo[0].getStart_node()][flightInfo[0].getEnd_node()]));
         //System.out.println(flightInfo[1].getStart_node());
 
-        int[][] route_matrix = new int[7][40];
-        int[][] time_matrix = new int[7][40];
-        int[][] conflict_matrix = new int [7][40];
+        int[][] route_matrix = new int[7][15];
+        int[][] time_matrix = new int[7][15];
+        int[][] conflict_matrix = new int [7][15];
         route_matrix = generateRouteMatrix(flightInfo,pathMap);
 //        for(int i=0;i<7;i++)
 //        {
-//            for(int j=0;j<40;j++)
+//            for(int j=0;j<15;j++)
 //            {
 //                    System.out.print(route_matrix[i][j]+"\t");
 //
@@ -141,7 +172,7 @@ public class main
         time_matrix = generateTimeMatrix(flightInfo,pathMap,map);
         for(int i=0;i<7;i++)
         {
-            for(int j=0;j<40;j++)
+            for(int j=0;j<15;j++)
             {
                 System.out.print(time_matrix[i][j]+"\t");
 
@@ -152,7 +183,7 @@ public class main
         conflict_matrix = generateConflictMatrix(flightInfo,route_matrix,time_matrix);
         for(int i=0;i<7;i++)
         {
-            for(int j=0;j<40;j++)
+            for(int j=0;j<15;j++)
             {
                 //System.out.println("blah");
                 System.out.print(conflict_matrix[i][j]+"\t");
@@ -160,8 +191,21 @@ public class main
             }
             System.out.println();
         }
-        int [][] final_time_matrix = new int[][];
-        final_time_matrix = resolveConflicts(flightInfo,pathMap,map,route_matrix,time_matrix,conflict_matrix)
+        int [][] final_time_matrix = new int[7][15];
+        final_time_matrix = resolveConflicts(flightInfo,pathMap,map,route_matrix,time_matrix,conflict_matrix);
+
+//        System.out.println();
+//        for(int i=0;i<7;i++)
+//        {
+//            for(int j=0;j<15;j++)
+//            {
+//                //System.out.println("blah");
+//                System.out.print(final_time_matrix[i][j]+"\t");
+//
+//            }
+//            System.out.println();
+//        }
+//
 
     }
 }
