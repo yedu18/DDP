@@ -11,9 +11,10 @@ import java.io.IOException;
 
 public class main
 {
-    public static int[][] generateRouteMatrix(Flight[] flightInfo, int[][][] pathMap, int[][] map, int[][] path_type)
+    public static List<int[]> flightRoutes(Flight[] flightInfo, int[][][] pathMap, int[][] map, int[][] path_type)
     {
-        int[][] route_matrix = new int[7][40];
+        //int[][] route_matrix = new int[7][40];
+        List<int[]> flight_routes = new ArrayList<>();
         for(int i=0;i<7;i++)
         {
             List<Integer> route = new ArrayList<Integer>();
@@ -91,6 +92,8 @@ public class main
                             else
                                 j=j+1;
                             break;
+                        default:
+                            break;
                     }
                 }
                 if(runlen>=flightInfo[i].getRun_len())
@@ -112,13 +115,10 @@ public class main
                 //System.out.println(flightRoute.length);
 
                 //int[] flightRoute = Arrays.copyOfRange(source,0,source.length);
-                System.out.println(Arrays.toString(flightRoute));
-                for(int k=0;k<flightRoute.length;k++)
-                {
-                    route_matrix[i][flightRoute[k]]=1;
-                }
+                //System.out.println(Arrays.toString(flightRoute));
+                flight_routes.add(flightRoute);
             }
-            if(status==3||status==4)
+            else if(status==3||status==4)
             {
                 //System.out.println(route);
                 int[] source = pathMap[current][flightInfo[i].getStart_node()];
@@ -146,33 +146,57 @@ public class main
                 //System.out.println(flightRoute.length);
 
                 //int[] flightRoute = Arrays.copyOfRange(source,0,source.length);
-                System.out.println(Arrays.toString(flightRoute));
-                for(int k=0;k<flightRoute.length;k++)
-                {
-                    route_matrix[i][flightRoute[k]]=1;
-                }
+                //System.out.println(Arrays.toString(flightRoute));
+                flight_routes.add(flightRoute);
             }
+            else
+            {
+                int[] source = pathMap[flightInfo[i].getStart_node()][flightInfo[i].getEnd_node()];
+                int[] flightRoute = Arrays.copyOfRange(source,0,source.length);
+                flight_routes.add(flightRoute);
+             }
 
         }
+        //flight_routes.toArray();
+        for(int i=0;i<flight_routes.size();i++)
+        {
+            System.out.println(Arrays.toString(flight_routes.get(i)));
+        }
+
+
         //time_matrix = generateTimeMatrix(flightInfo,pathMap,map);
 
+        return flight_routes;
+    }
+
+    public static int[][] generateRouteMatrix(Flight[] flightInfo, List<int[]> flight_routes)
+    {
+        int[][] route_matrix = new int[7][40];
+        for(int i=0;i<7;i++)
+        {
+            for(int j=0;j<flight_routes.get(i).length;j++)
+            {
+                route_matrix[i][flight_routes.get(i)[j]]=1;
+            }
+        }
         return route_matrix;
     }
 
-    public static int[][] generateTimeMatrix(Flight[] flightInfo, int[][][] pathMap, int[][] map)
+
+
+
+    public static int[][] generateTimeMatrix(Flight[] flightInfo, int[][] map, List<int[]> flight_routes)
     {
         int[][] time_matrix = new int[7][40];
         for(int i=0;i<7;i++)
         {
             int start_time = flightInfo[i].getStart_time();
             int current_time=start_time;
-            int[] source = pathMap[flightInfo[i].getStart_node()][flightInfo[i].getEnd_node()];
-            int[] flightRoute = Arrays.copyOfRange(source,0,source.length);
-            time_matrix[i][flightRoute[0]]=current_time;
-            for(int j=1;j<flightRoute.length;j++)
+            time_matrix[i][flight_routes.get(i)[0]]=current_time;
+            for(int j=1;j<flight_routes.get(i).length;j++)
             {
-                current_time= current_time + map[flightRoute[j-1]][flightRoute[j]];
-                time_matrix[i][flightRoute[j]]=current_time;
+                current_time= current_time + map[flight_routes.get(i)[j-1]][flight_routes.get(i)[j]];
+                time_matrix[i][flight_routes.get(i)[j]]=current_time;
             }
         }
         return time_matrix;
@@ -269,7 +293,7 @@ public class main
 
     }
 
-    public static void fileWrite(Flight[] flightInfo, int[][][] pathMap, int[][] map, int[][] route_matrix, int[][] time_matrix, int[][] conflict_matrix) throws IOException
+    public static void fileWrite(Flight[] flightInfo, int[][] time_matrix, List<int[]> flight_routes) throws IOException
     {
 
         BufferedWriter writer = new BufferedWriter(new FileWriter("DDP/solution.txt"));
@@ -278,14 +302,14 @@ public class main
         for(int i=0;i<7;i++)
         {
             writer.write(i+" : ");
-            int[] source = pathMap[flightInfo[i].getStart_node()][flightInfo[i].getEnd_node()];
-            int[] flightRoute = Arrays.copyOfRange(source,0,source.length);
-            for(int j=0;j<flightRoute.length;j++)
+            //int[] source = pathMap[flightInfo[i].getStart_node()][flightInfo[i].getEnd_node()];
+            //int[] flightRoute = Arrays.copyOfRange(source,0,source.length);
+            for(int j=0;j<flight_routes.get(i).length;j++)
             {
-                if(j==flightRoute.length-1)
-                    writer.write((flightRoute[j]+1)+" "+time_matrix[i][flightRoute[j]]);
+                if(j==flight_routes.get(i).length-1)
+                    writer.write((flight_routes.get(i)[j]+1)+" "+time_matrix[i][flight_routes.get(i)[j]]);
                 else
-                    writer.write((flightRoute[j]+1)+" "+time_matrix[i][flightRoute[j]]+" - ");
+                    writer.write((flight_routes.get(i)[j]+1)+" "+time_matrix[i][flight_routes.get(i)[j]]+" - ");
             }
             writer.newLine();
         }
@@ -316,11 +340,13 @@ public class main
         //System.out.println(Arrays.toString(pathMap[flightInfo[0].getStart_node()][flightInfo[0].getEnd_node()]));
         //System.out.println(flightInfo[1].getStart_node());
 
+        List<int[]> flight_routes = new ArrayList<>();
         int[][] route_matrix = new int[7][40];
         int[][] time_matrix = new int[7][40];
         int[][] conflict_matrix = new int [7][40];
 
-        route_matrix = generateRouteMatrix(flightInfo,pathMap,map,path_type);
+        flight_routes = flightRoutes(flightInfo,pathMap,map,path_type);
+        route_matrix = generateRouteMatrix(flightInfo,flight_routes);
 //        for(int i=0;i<7;i++)
 //        {
 //            for(int j=0;j<40;j++)
@@ -331,7 +357,7 @@ public class main
 //            System.out.println();
 //            System.out.println();
 //        }
-        time_matrix = generateTimeMatrix(flightInfo,pathMap,map);
+        time_matrix = generateTimeMatrix(flightInfo,map,flight_routes);
         for(int i=0;i<7;i++)
         {
             for(int j=0;j<40;j++)
@@ -369,7 +395,7 @@ public class main
 //        }
 //
         try {
-            fileWrite(flightInfo,pathMap,map,route_matrix,time_matrix,conflict_matrix);
+            fileWrite(flightInfo,time_matrix,flight_routes);
         }
         catch(IOException e) {
             e.printStackTrace();
